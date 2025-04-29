@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cors({
-    origin: ['http://localhost:3030'],
+    origin: ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop/'],
     credentials: true
   }
 ));
