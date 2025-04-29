@@ -46,6 +46,13 @@ export default class UserController extends BaseController<IUser> {
       const { phone, password } = req.body;
       const existingUser = await this.model.findOne({ phone });
 
+      console.log("req.body");
+      console.log(req.body);
+
+      console.log("existingUser");
+      console.log(existingUser);
+      
+
       if (!existingUser) {
         return sendError(res, 'Email ou mot de passe incorrect', 401);
       }
