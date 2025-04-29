@@ -42,7 +42,11 @@ export default class UserController extends BaseController<IUser> {
   };
 
   authentification = async (req: Request, res: Response, next: NextFunction) => {
+
+    
+
     try {
+
       const { phone, password } = req.body;
       const existingUser = await this.model.findOne({ phone });
 
@@ -76,6 +80,8 @@ export default class UserController extends BaseController<IUser> {
       });
 
       sendSuccess(res, 'Login réussi', existingUser, 200);
+
+      
     } catch (err) {
       sendError(res, 'Erreur d’authentification', 500, err);
     }

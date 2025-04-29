@@ -25,12 +25,13 @@ app.use(bodyParser.urlencoded({
   limit: '10000mb'
 }));
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop/'],
+    credentials: true
+  }
+));
 
-// {
-//   origin: ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop/'],
-//   credentials: true
-// }
+
 
 
 
