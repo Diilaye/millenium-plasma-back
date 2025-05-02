@@ -6,7 +6,7 @@ export const demandeUserValidator = Joi.object({
     .required()
     .messages({
       'string.base': '"phone" doit être une chaîne',
-      'string.pattern.base': '"phone" doit être un numéro de téléphone valide (10 chiffres)',
+      'string.pattern.base': '"phone" doit être un numéro de téléphone valide (9 chiffres)',
       'any.required': '"phone" est requis'
     }),
 });

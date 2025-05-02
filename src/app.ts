@@ -3,10 +3,14 @@ import * as dotenv from 'dotenv';
 import connectDB from "./configs/db";
 import {errorHandler} from "./middlewares/errorHandler";
 import bodyParser from "body-parser";
-import userRoute from "./routes/utilisateur.route";
-import demandeUserRoute from "./routes/demande-user.route";
 import cors from "cors";
 import cookieParser from 'cookie-parser';
+
+// import route 
+
+import userRoute from "./routes/utilisateur.route";
+import demandeUserRoute from "./routes/demande-user.route";
+import  serviceManagementRoute  from './routes/service-management.route';
 
 dotenv.config();
 
@@ -25,13 +29,20 @@ app.use(bodyParser.urlencoded({
   limit: '10000mb'
 }));
 
-app.use(cors({
-    origin: ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop/'],
-    credentials: true
-  }
-));
+// app.use(cors({
+//     origin: ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop/'],
+//     credentials: true
+//   }
+// ));
 
+app.use(cors());
 
+app.use((_req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 
 
 
@@ -46,6 +57,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/users",userRoute);
 
 app.use("/api/v1/demande-users",demandeUserRoute);
+
+app.use("/api/v1/service",serviceManagementRoute);
 
 
 app.get('/', (_req, res) => {
