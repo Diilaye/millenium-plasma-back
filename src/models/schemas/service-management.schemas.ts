@@ -8,6 +8,8 @@ export const ServiceManagementSchemas : Schema = new Schema(
 
         price:  {type: Number, required: true , default: 0},
 
+        isAvailable : {type: Boolean, default: true},
+
         CratedAt: {
             type: Date,
             default: () => DateTime.now().setZone('Africa/Dakar').toJSDate()

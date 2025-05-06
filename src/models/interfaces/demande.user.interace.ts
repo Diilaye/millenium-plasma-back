@@ -16,5 +16,4 @@ export interface IDemandeUser extends Document {
 
 }
 
-
 export default mongoose.model<IDemandeUser>("DemandeUser", DemandeUserSchemas);
