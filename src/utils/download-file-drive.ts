@@ -23,8 +23,21 @@ interface DriveDownloadResult {
 export async function downloadDriveImage(
   driveUrl: string,
   baseUrl: string,
-  uploadDir: string = path.join(process.cwd(), '/src/uploads')
+  uploadDir?: string
 ): Promise<DriveDownloadResult> {
+  // Déterminer si nous sommes en production ou en développement
+  const isProd = process.env.NODE_ENV === 'production';
+  
+  // Définir le chemin du dossier d'upload en fonction de l'environnement
+  if (!uploadDir) {
+    uploadDir = isProd
+      ? path.join(process.cwd(), '/dist/uploads')
+      : path.join(process.cwd(), '/src/uploads');
+  }
+  
+  console.log(`Environnement: ${isProd ? 'production' : 'développement'}`);
+  console.log(`Dossier d'upload: ${uploadDir}`);
+  
   try {
     // Vérifier l'URL
     if (!driveUrl) {

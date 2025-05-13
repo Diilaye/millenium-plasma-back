@@ -65,10 +65,16 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Dossier pour stocker les images téléchargées
-const uploadDir = path.join(__dirname, '/src/uploads');
+const isProd = process.env.NODE_ENV === 'production';
+const uploadDir = isProd
+  ? path.join(process.cwd(), '/dist/uploads')
+  : path.join(__dirname, '/uploads');
+
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
+console.log(`Environnement: ${isProd ? 'production' : 'développement'}`);
+console.log(`Dossier d'upload: ${uploadDir}`);
 
 // Rendre le dossier uploads accessible
 app.use('/uploads', express.static(uploadDir));
