@@ -65,7 +65,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Dossier pour stocker les images téléchargées
-const uploadDir = path.join(__dirname, 'uploads');
+const uploadDir = path.join(__dirname, '/src/uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
