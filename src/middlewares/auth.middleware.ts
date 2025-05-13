@@ -14,6 +14,8 @@ export const authMiddleware = async (req: RequestWithUser, res: Response, next: 
         const token = req.header("Authorization")?.replace("Bearer ", "");
        
         const bearerToken =token.replace("Bearer ", "");
+
+        //console.log("bearerToken", bearerToken);
         
 
         if (!bearerToken) {

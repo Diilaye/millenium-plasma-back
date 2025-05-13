@@ -15,16 +15,10 @@ export default class ServiceManagementController extends BaseController<IService
         try {
             const { error } = serviceManagementValidator.validate(req.body);
 
+            console.log('Validation error:', error);
+
             if (error) { 
                 sendError(res, 'Erreur de validation', 400, error.details[0].message);
-                return;
-            }
-
-            const { phone } = req.body;
-            const existingServiceManagement = await this.model.findOne({ phone });
-
-            if (existingServiceManagement) {
-                sendError(res, "Demande utilisateur déjà créée", 400, "Demande utilisateur déjà créée" );
                 return;
             }
 
@@ -39,4 +33,5 @@ export default class ServiceManagementController extends BaseController<IService
                  return;
         }
     }
+
 }

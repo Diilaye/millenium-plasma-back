@@ -30,6 +30,7 @@ export default class BaseController<T> {
   };
 
   create = async (req: Request, res: Response, next: NextFunction) => {
+    
     try {
       const item = await this.model.create(req.body);
       sendSuccess(res, 'Création réussie', item, 201);

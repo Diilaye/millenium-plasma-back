@@ -1,18 +1,17 @@
 import {Schema} from "mongoose";
 import {DateTime} from "luxon";
 
-export const ServiceManagementSchemas : Schema = new Schema(
+export const ReviewsAdminSchemas : Schema = new Schema(
     {
-        nom: {type: String, required: true},
+        nom: {type: String, default: null, required: false},
 
+        comment: {type: String, default: null, required: false},
 
-        price:  {type: Number, required: true , default: 0},
+        rating: {type: Number, default: 5, required: false},
 
-        description: {type: String, required: true},
+        isAvailable:  {type: Boolean, required: false , default: true},
 
-        isAvailable : {type: Boolean, default: true},
-
-        CratedAt: {
+        createdAt: {
             type: Date,
             default: () => DateTime.now().setZone('Africa/Dakar').toJSDate()
         },

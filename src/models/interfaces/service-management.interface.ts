@@ -5,6 +5,7 @@ export interface IServiceManagement extends Document {
     id: string;
     nom: string;
     price: number;
+    description: string;
     isAvailable: boolean;
     CratedAt: Date;
     updatedAt: Date;    
