@@ -41,7 +41,7 @@ app.use(bodyParser.urlencoded({
 
 
 
-const allowedOrigins = ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop'];
+const allowedOrigins = ['http://localhost:3030' , 'https://millenium-plasma.nataal.shop', 'https://millenium-placement.sn'];
 
 app.use(cors({
   origin: (origin, callback) => {
