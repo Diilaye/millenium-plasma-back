@@ -6,7 +6,7 @@ export const PaymentSchema: Schema = new Schema(
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false, // Rendre le champ optionnel pour permettre les paiements sans authentification
     },
     
     amount: {

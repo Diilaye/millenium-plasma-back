@@ -96,6 +96,138 @@ export default class PaymentController extends BaseController<typeof PaymentMode
     }
   };
 
+  // Process reservation payment
+  processReservationPayment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { reservationId, amount, paymentMethod, phoneNumber, cardDetails } = req.body;
+      
+      console.log('Traitement du paiement pour la réservation:', reservationId);
+      console.log('Données de paiement reçues:', { amount, paymentMethod, phoneNumber: phoneNumber ? '******' + phoneNumber.slice(-4) : null });
+      
+      if (!reservationId) {
+        return sendError(res, 'ID de réservation requis', 400);
+      }
+      
+      if (!amount) {
+        return sendError(res, 'Montant requis', 400);
+      }
+      
+      if (!paymentMethod) {
+        return sendError(res, 'Méthode de paiement requise', 400);
+      }
+      
+      // Vérifier si la réservation existe
+      const ReservationModel = require('../models/interfaces/reservation.interface').default;
+      const reservation = await ReservationModel.findById(reservationId);
+      
+      if (!reservation) {
+        return sendError(res, 'Réservation introuvable', 404);
+      }
+      
+      // Convertir la méthode de paiement au format attendu par le modèle
+      let method: 'OM' | 'WAVE' | 'CARD' | 'BANK_TRANSFER' = 'WAVE';
+      
+      switch (paymentMethod) {
+        case 'mobile_money':
+          method = 'WAVE';
+          break;
+        case 'card':
+          method = 'CARD';
+          break;
+        case 'bank_transfer':
+          method = 'BANK_TRANSFER';
+          break;
+      }
+      
+      // Générer une référence unique
+      const reference = `RES-${reservationId.substring(0, 8)}-${DateTime.now().toFormat('yyyyMMddHHmmss')}`;
+      
+      // Créer l'enregistrement de paiement
+      const paymentData: any = {
+        amount,
+        method,
+        reference,
+        currency: 'XOF',
+        // Ne pas inclure le status ici, il sera ajouté automatiquement par défaut
+        metadata: {
+          reservationId,
+          ...(phoneNumber && { phoneNumber }),
+          ...(cardDetails && { cardDetails }),
+          paymentMethod
+        }
+      };
+      
+      // Ajouter l'ID utilisateur si l'utilisateur est authentifié
+      if ((req as RequestWithUser).user && (req as RequestWithUser).user._id) {
+        paymentData.userId = (req as RequestWithUser).user._id.toString();
+      }
+      
+      // Valider les données de paiement
+      const { error, value } = paymentValidator.validate(paymentData);
+      
+      if (error) {
+        console.error('Erreur de validation du paiement:', error.details);
+        return sendError(res, `Erreur de validation: ${error.details[0].message}`, 400);
+      }
+      
+      // Ajouter des champs par défaut si nécessaire
+      if (!value.client) {
+        value.client = `client-${reservationId}`;
+      }
+      
+      if (!value.type) {
+        value.type = 'payment';
+      }
+      
+      // Créer l'enregistrement de paiement
+      const payment = await this.model.create({
+        ...value,
+        createdAt: DateTime.now().setZone('Africa/Dakar').toJSDate()
+      });
+      
+      // Générer un lien de paiement en fonction de la méthode
+      try {
+        // Déterminer la méthode de paiement pour la génération du lien
+        const paymentMethod = method === 'CARD' ? 'WAVE' : method;
+        
+        // Générer le lien de paiement
+        const paymentLink = await generatePaymentLink(
+          paymentMethod as 'WAVE' | 'OM',
+          amount,
+          reference,
+          value.client || 'Client'
+        );
+        
+        // Mettre à jour le paiement avec le lien
+        const updatedPayment = await this.model.findByIdAndUpdate(
+          payment.id,
+          { paymentLink, updatedAt: DateTime.now().setZone('Africa/Dakar').toJSDate() },
+          { new: true }
+        );
+        
+        // Mettre à jour le statut de la réservation à PENDING_PAYMENT
+        await ReservationModel.findByIdAndUpdate(
+          reservationId,
+          { 
+            status: 'PENDING', 
+            paymentId: payment.id,
+            updatedAt: DateTime.now().setZone('Africa/Dakar').toJSDate() 
+          },
+          { new: true }
+        );
+        
+        // Retourner le paiement avec le lien de paiement
+        sendSuccess(res, 'Lien de paiement généré avec succès', { ...updatedPayment.toObject(), paymentLink }, 200);
+      } catch (linkError) {
+        console.error('Erreur de génération du lien de paiement:', linkError);
+        sendError(res, 'Erreur lors de la génération du lien de paiement', 500);
+      }
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      sendError(res, 'Erreur lors du traitement du paiement', 500);
+    }
+  };
+
   // Update payment status
   updateStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -19,6 +19,9 @@ router.put('/:id/status', authMiddleware, paymentController.updateStatus);
 router.get('/verify/:reference', paymentController.verifyPayment);
 router.post('/callback', paymentController.processCallback);
 
+// Traitement des paiements de réservation (accessible sans authentification)
+router.post('/process', paymentController.processReservationPayment);
+
 // Payment initiation with redirect
 router.post('/initiate', authMiddleware, generatePaymentRedirect, (req: any, res) => {
   if (req.redirectUrl) {

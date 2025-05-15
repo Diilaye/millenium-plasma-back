@@ -21,6 +21,7 @@ import employerRoute from "./routes/employer.route";
 import reviewsAdminRoute from "./routes/reviews-admin.route";
 import reviewsClientRoute from "./routes/reviews-client.route";
 import paymentRoute from "./routes/payment.routes";
+import reservationRoute from "./routes/reservation.route";
 
 dotenv.config();
 
@@ -93,6 +94,8 @@ app.use("/api/v1/reviews-admin",reviewsAdminRoute);
 app.use("/api/v1/reviews-client",reviewsClientRoute);
 
 app.use("/api/v1/payments",paymentRoute);
+
+app.use("/api/v1/reservations",reservationRoute);
 
 
 app.get('/', (_req, res) => {

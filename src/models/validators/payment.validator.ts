@@ -3,11 +3,10 @@ import Joi from 'joi';
 export const paymentValidator = Joi.object({
   userId: Joi.string()
     .pattern(/^[0-9a-fA-F]{24}$/)
-    .required()
+    .optional()
     .messages({
       'string.base': '"userId" doit être une chaîne',
-      'string.pattern.base': '"userId" doit être un ID MongoDB valide',
-      'any.required': '"userId" est requis'
+      'string.pattern.base': '"userId" doit être un ID MongoDB valide'
     }),
 
   amount: Joi.number()
@@ -44,10 +43,9 @@ export const paymentValidator = Joi.object({
     }),
     
   client: Joi.string()
-    .required()
+    .optional()
     .messages({
-      'string.base': '"client" doit être une chaîne',
-      'any.required': '"client" est requis'
+      'string.base': '"client" doit être une chaîne'
     }),
     
   phone: Joi.string()
@@ -83,6 +81,14 @@ export const paymentValidator = Joi.object({
     .default({})
     .messages({
       'object.base': '"metadata" doit être un objet'
+    }),
+    
+  status: Joi.string()
+    .valid('PENDING', 'COMPLETED', 'FAILED', 'REFUNDED', 'CANCELLED')
+    .default('PENDING')
+    .messages({
+      'string.base': '"status" doit être une chaîne',
+      'any.only': '"status" doit être l\'un des statuts suivants : PENDING, COMPLETED, FAILED, REFUNDED, CANCELLED'
     })
 });
 
