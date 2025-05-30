@@ -92,9 +92,9 @@ export const employerValidator = Joi.object({
     }),
 
   photo: Joi.string()
-    .uri()
+    .allow('', null)
     .messages({
-      'string.uri': "L'URL de la photo est invalide"
+      'string.empty': "La photo est obligatoire"
     }),
 
   experience: Joi.string()

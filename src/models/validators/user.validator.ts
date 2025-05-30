@@ -23,17 +23,17 @@ export const userValidator = Joi.object({
       'any.required': '"lastName" est requis'
     }),
 
-  email: Joi.string()
-    .email({ tlds: { allow: ['com', 'net', 'org' , 'sn' , 'co'] } })
-    .required()
-    .messages({
-      'string.base': '"email" doit être une chaîne',
-      'string.email': '"email" doit être une adresse e-mail valide',
-      'any.required': '"email" est requis'
-    }),
+  // email: Joi.string()
+  //   .email({ tlds: { allow: ['com', 'net', 'org' , 'sn' , 'co'] } })
+  //   .required()
+  //   .messages({
+  //     'string.base': '"email" doit être une chaîne',
+  //     'string.email': '"email" doit être une adresse e-mail valide',
+  //     'any.required': '"email" est requis'
+  //   }),
 
   phone: Joi.string()
-    .pattern(/^[0-9]{10}$/)
+    .pattern(/^[0-9]{9}$/)
     .required()
     .messages({
       'string.base': '"phone" doit être une chaîne',
@@ -44,13 +44,11 @@ export const userValidator = Joi.object({
   password: Joi.string()
     .min(8)
     .max(20)
-    .pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/)
     .required()
     .messages({
       'string.base': '"password" doit être une chaîne',
       'string.min': '"password" doit avoir au moins 8 caractères',
       'string.max': '"password" doit avoir au plus 20 caractères',
-      'string.pattern.base': '"password" doit contenir au moins une majuscule, un chiffre et un caractère spécial',
       'any.required': '"password" est requis'
     }),
 

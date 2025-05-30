@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import { DateTime } from "luxon";
   
   export const EmployerSchema: Schema = new Schema(
     {
@@ -44,6 +45,14 @@ import mongoose, { Document, Schema } from 'mongoose';
       photo: {
         type: String,
         default: 'default.jpg'
+      },
+      cv: {
+        type: String,
+        default: ''
+      },
+      certifications: {
+        type: [String],
+        default: []
       },
       experience: {
         type: String,

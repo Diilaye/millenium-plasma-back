@@ -113,5 +113,65 @@ export default class UserController extends BaseController<IUser> {
       next(new CustomError('Erreur lors de la mise à jour', 500));
     }
   };
+
+  register = async (req: Request, res: Response, next: NextFunction) => {
+
+    console.log("req.body");
+    console.log(req.body);
+    
+
+    try {
+
+      // Validation des données
+      // const { error } = userValidator.validate(req.body);
+      // console.log("error");
+      // console.log(error);
+      
+      // if (error) {
+      //   return sendError(res, 'Erreur de validation', 400, error.details[0].message);
+      // }
+
+      const { firstName, lastName, phone, password, role } = req.body;
+
+      // Vérifier si l'utilisateur existe déjà
+      const existingUser = await this.model.findOne({ phone });
+
+      if (existingUser) {
+        return sendError(res, 'Cet email ou numéro de téléphone est déjà utilisé', 400);
+      }
+
+      // Créer le nouvel utilisateur
+      const newUser = await this.model.create({
+        firstName,
+        lastName,
+        phone,
+        password, // Le hachage du mot de passe est géré par le modèle
+        role,
+        isActive: true,
+      });
+
+      // Générer un token pour l'utilisateur
+      await newUser.generateToken();
+
+      // Définir le cookie
+      res.cookie('token', newUser.token, {
+        httpOnly: true,
+        secure: process.env.MODE === 'prod',
+        maxAge: 24 * 60 * 60 * 1000 // 24 heures
+      });
+
+      // Retourner la réponse
+      const userResponse = {
+        ...newUser.toObject(),
+        token: newUser.token // Inclure le token dans la réponse
+      };
+      delete userResponse.password; // Ne pas renvoyer le mot de passe
+
+      sendSuccess(res, 'Inscription réussie', userResponse, 201);
+    } catch (error) {
+      console.error('Erreur d\'inscription:', error);
+      sendError(res, 'Erreur lors de l\'inscription', 500, error);
+    }
+  };
 }
 

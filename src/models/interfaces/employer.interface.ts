@@ -13,10 +13,14 @@ export interface IEmployer {
     availability: string;
     status: 'available' | 'unavailable' | 'busy';
     photo: string;
+    cv: string;
+    certifications: string[];
     experience: string;
     languages: string[];
     skills: string[];
     notes?: string;
+    userId?: string; // Référence à l'utilisateur propriétaire
+    isActive: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }

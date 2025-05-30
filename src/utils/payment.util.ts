@@ -17,7 +17,7 @@ export const generatePaymentLink = async (
 ): Promise<string> => {
   try {
     // Base callback URL for payment notifications
-    const baseCallback = process.env.PAYMENT_CALLBACK_URL || 'https://mp-api.nataal.shop/api/v1/payments';
+    const baseCallback = 'https://mp-api.nataal.shop/api/v1/payments/callback';
 
     if (method === 'OM') {
       // Get Orange Money token

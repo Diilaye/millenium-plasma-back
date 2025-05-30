@@ -14,6 +14,7 @@ router.delete('/:id', authMiddleware, controller.delete);
 
 // Routes spécifiques
 router.post('/login', controller.authentification);
+router.post('/register', controller.register);
 router.get('/auth/me', authMiddleware, controller.getAuth);
 
 export default router;
