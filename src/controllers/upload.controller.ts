@@ -36,11 +36,11 @@ declare global {
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const isProd = process.env.NODE_ENV === 'production';
-    // const uploadDir = isProd
-    //   ? path.join(process.cwd(), '/dist/uploads')
-    //   : path.join(__dirname, '/uploads');
+    const uploadDir = isProd
+      ? path.join(__dirname,'..','..', '/dist/uploads')
+      : path.join(__dirname,'..','..','/uploads');
     
-    const uploadDir = path.join(__dirname,'..','..','/uploads');
+    //const uploadDir = path.join(__dirname,'..','..','/uploads');
 
     console.log("uploadDir");
     console.log(uploadDir);
