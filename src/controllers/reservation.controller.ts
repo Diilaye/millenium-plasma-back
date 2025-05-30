@@ -399,4 +399,58 @@ export default class ReservationController extends BaseController<IReservation> 
       next(new CustomError('Erreur lors de la récupération des statistiques', 500));
     }
   };
+
+  // Méthode pour suivre une réservation sans authentification
+  trackReservation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      // Récupérer l'ID et l'email depuis les paramètres de requête
+      const { id, email } = req.query;
+      
+      // Vérifier que les paramètres requis sont présents
+      if (!id || !email) {
+        sendError(res, 'L\'ID de réservation et l\'email sont requis', 400);
+        return;
+      }
+
+      console.log(`Tentative de suivi de réservation - ID: ${id}, Email: ${email}`);
+      
+      // Rechercher la réservation par ID
+      const reservation = await this.model.findById(id)
+        .populate('userId', 'firstName lastName email phone')
+        .populate({
+          path: 'employerId',
+          select: 'firstName lastName speciality image phone email address description',
+          model: 'Employer'
+        })
+        .populate('serviceId', 'name description price');
+      
+      // Vérifier si la réservation existe
+      if (!reservation) {
+        sendError(res, 'Réservation non trouvée', 404);
+        return;
+      }
+      
+      // Vérifier que l'email correspond à celui de la réservation
+      const reservationEmail = reservation.clientEmail || 
+                              (reservation.userId && reservation.userId.email) || 
+                              '';
+      
+      if (reservationEmail.toLowerCase() !== String(email).toLowerCase()) {
+        sendError(res, 'Les informations fournies ne correspondent pas à cette réservation', 403);
+        return;
+      }
+      
+      console.log(`Réservation trouvée pour le suivi - ID: ${id}, Statut: ${reservation.status}`);
+      
+      // Renvoyer les détails de la réservation
+      sendSuccess(res, 'Détails de la réservation récupérés avec succès', reservation, 200);
+    } catch (error: any) {
+      console.error('Erreur lors du suivi de réservation:', error);
+      if (error.name === 'CastError') {
+        sendError(res, 'ID de réservation invalide', 400);
+      } else {
+        next(new CustomError('Erreur lors de la récupération des détails de la réservation', 500));
+      }
+    }
+  };
 }

@@ -20,6 +20,9 @@ router.get('/user/:userId', authMiddleware, reservationController.getByUserId);
 // Route pour obtenir les réservations d'un employé spécifique
 router.get('/employer/:employerId', authMiddleware, reservationController.getByEmployerId);
 
+// Route pour le suivi public des réservations (sans authentification)
+router.get('/track', reservationController.trackReservation);
+
 // Route pour obtenir une réservation spécifique par ID
 router.get('/:id', authMiddleware, reservationController.getById);
 
