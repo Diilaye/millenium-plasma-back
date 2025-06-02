@@ -47,7 +47,7 @@ export default class EmployerController extends BaseController<IEmployer> {
           // Si le téléchargement a réussi, mettre à jour l'URL de la photo
           if (imageResult.success && imageResult.url) {
             console.log("Image téléchargée avec succès:", imageResult.url);
-            employerData.photo = imageResult.url;
+            employerData.photo = baseUrl + imageResult.url;
           } else {
             console.error("Échec du téléchargement de l'image:", imageResult.error);
             // Continuer sans modifier l'URL (optionnel)

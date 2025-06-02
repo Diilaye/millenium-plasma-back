@@ -56,7 +56,7 @@ export default class ReservationController extends BaseController<IReservation> 
       }
       
       if (!reservationData.amount && reservationData.amount !== 0) {
-        reservationData.amount = 5000; // Montant par défaut si non spécifié
+        reservationData.amount = 100; // Montant par défaut si non spécifié
       }
       
       // Définir le statut par défaut si non spécifié
