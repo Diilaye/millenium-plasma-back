@@ -367,7 +367,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
 
   successWave = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { reference, status, transactionId } = req.body;
+      const { reference, status, transactionId } = req.query;
       
       if (!reference || !status) {
         return next(new CustomError('Paramètres manquants dans la requête de callback', 400));
