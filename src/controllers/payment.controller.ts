@@ -346,6 +346,8 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       }
 
       const payment = await this.model.findOne({ reference });
+
+      console.log('Payment found:', payment);
       
       if (!payment) {
         return next(new CustomError('Référence de paiement invalide', 404));

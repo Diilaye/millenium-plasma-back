@@ -17,7 +17,7 @@ router.delete('/:id', authMiddleware, paymentController.delete);
 router.get('/user/:userId', authMiddleware, paymentController.getByUserId);
 router.put('/:id/status', authMiddleware, paymentController.updateStatus);
 router.get('/verify/:reference', paymentController.verifyPayment);
-router.post('/callback', paymentController.processCallback);
+router.get('/callback', paymentController.processCallback);
 
 // Traitement des paiements de réservation (accessible sans authentification)
 router.post('/process', paymentController.processReservationPayment);
