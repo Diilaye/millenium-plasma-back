@@ -20,7 +20,7 @@ export const generatePaymentRedirect = async (req: CustomRequest, res: Response,
     return res.status(400).json({ message: 'Les champs "amount" et "rv" sont requis.' });
   }
 
-  const baseCallback = 'https://api.verumed.sn/api/v1/transactions';
+  const baseCallback = 'https://mp-api.nataal.shop/api/v1/payments/callback';
 
   try {
     if (method === 'OM') {

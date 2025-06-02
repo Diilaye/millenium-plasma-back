@@ -364,4 +364,63 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       next(new CustomError('Erreur lors du traitement du callback', 500));
     }
   };
+
+  successWave = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { reference, status, transactionId } = req.body;
+      
+      if (!reference || !status) {
+        return next(new CustomError('Paramètres manquants dans la requête de callback', 400));
+      }
+  
+      const payment = await this.model.findOne({ reference });
+  
+      console.log('Payment found:', payment);
+      
+      if (!payment) {
+        return next(new CustomError('Référence de paiement invalide', 404));
+      }
+  
+      payment.status = status;
+      if (transactionId) payment.transactionId = transactionId;
+      payment.updatedAt = DateTime.now().setZone('Africa/Dakar').toJSDate();
+      
+      await payment.save();
+  
+      sendSuccess(res, 'Callback traité avec succès', payment, 200);
+    } catch (error) {
+      next(new CustomError('Erreur lors du traitement du callback', 500));
+    }
+  };
+  
+  errorWave = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { reference, status, transactionId } = req.body;
+      
+      if (!reference || !status) {
+        return next(new CustomError('Paramètres manquants dans la requête de callback', 400));
+      }
+  
+      const payment = await this.model.findOne({ reference });
+  
+      console.log('Payment found:', payment);
+      
+      if (!payment) {
+        return next(new CustomError('Référence de paiement invalide', 404));
+      }
+  
+      payment.status = status;
+      if (transactionId) payment.transactionId = transactionId;
+      payment.updatedAt = DateTime.now().setZone('Africa/Dakar').toJSDate();
+      
+      await payment.save();
+  
+      sendSuccess(res, 'Callback traité avec succès', payment, 200);
+    } catch (error) {
+      next(new CustomError('Erreur lors du traitement du callback', 500));
+    }
+  };
+  
 }
+
+

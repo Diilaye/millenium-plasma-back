@@ -18,6 +18,8 @@ router.get('/user/:userId', authMiddleware, paymentController.getByUserId);
 router.put('/:id/status', authMiddleware, paymentController.updateStatus);
 router.get('/verify/:reference', paymentController.verifyPayment);
 router.get('/callback', paymentController.processCallback);
+router.get('/callback/success-wave', paymentController.successWave);
+router.get('/callback/error-wave', paymentController.errorWave);
 
 // Traitement des paiements de réservation (accessible sans authentification)
 router.post('/process', paymentController.processReservationPayment);
