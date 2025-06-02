@@ -368,8 +368,6 @@ export default class PaymentController extends BaseController<typeof PaymentMode
   successWave = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { reference } = req.query;
-
-    
       
       if (!reference) {
         return res.redirect('https://millenium-placement.sn/?status=error&message=Paramètres manquants');
@@ -390,6 +388,29 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       payment.updatedAt = DateTime.now().setZone('Africa/Dakar').toJSDate();
       
       await payment.save();
+
+      // Mettre à jour la réservation associée si elle existe
+      if (payment.metadata?.reservationId) {
+        try {
+          // Importer dynamiquement le modèle de réservation
+          const ReservationModel = require('../models/interfaces/reservation.interface').default;
+          
+          // Mettre à jour le statut de la réservation à CONFIRMED
+          const updatedReservation = await ReservationModel.findByIdAndUpdate(
+            payment.metadata.reservationId,
+            { 
+              status: 'CONFIRMED',
+              updatedAt: DateTime.now().setZone('Africa/Dakar').toJSDate() 
+            },
+            { new: true }
+          );
+          
+          console.log('Réservation mise à jour:', updatedReservation);
+        } catch (reservationError) {
+          console.error('Erreur lors de la mise à jour de la réservation:', reservationError);
+          // Ne pas interrompre le flux si la mise à jour de la réservation échoue
+        }
+      }
   
       // Rediriger vers la page d'accueil avec un message de succès
       return res.redirect('https://millenium-placement.sn/?status=success&message=Paiement effectué avec succès');
@@ -419,6 +440,29 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       payment.updatedAt = DateTime.now().setZone('Africa/Dakar').toJSDate();
       
       await payment.save();
+
+       // Mettre à jour la réservation associée si elle existe
+       if (payment.metadata?.reservationId) {
+        try {
+          // Importer dynamiquement le modèle de réservation
+          const ReservationModel = require('../models/interfaces/reservation.interface').default;
+          
+          // Mettre à jour le statut de la réservation à CONFIRMED
+          const updatedReservation = await ReservationModel.findByIdAndUpdate(
+            payment.metadata.reservationId,
+            { 
+              status: 'CANCELLED',
+              updatedAt: DateTime.now().setZone('Africa/Dakar').toJSDate() 
+            },
+            { new: true }
+          );
+          
+          console.log('Réservation mise à jour:', updatedReservation);
+        } catch (reservationError) {
+          console.error('Erreur lors de la mise à jour de la réservation:', reservationError);
+          // Ne pas interrompre le flux si la mise à jour de la réservation échoue
+        }
+      }
   
       // Rediriger vers la page d'accueil avec un message d'erreur
       return res.redirect('https://millenium-placement.sn/?status=error&message=Le paiement a echoué');
