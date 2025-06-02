@@ -372,7 +372,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
     
       
       if (!reference) {
-        return res.redirect('https://mp.nataal.shop?status=error&message=Paramètres manquants');
+        return res.redirect('https://millenium-placement.sn/?status=error&message=Paramètres manquants');
       }
   
       const payment = await this.model.findOne({ reference });
@@ -382,7 +382,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       console.log('Payment found metadata:', payment.metadata?.reservationId);
       
       if (!payment) {
-        return res.redirect('https://mp.nataal.shop?status=error&message=Référence de paiement invalide');
+        return res.redirect('https://millenium-placement.sn/?status=error&message=Référence de paiement invalide');
       }
   
       payment.status = "COMPLETED";
@@ -392,10 +392,10 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       await payment.save();
   
       // Rediriger vers la page d'accueil avec un message de succès
-      return res.redirect('https://mp.nataal.shop?status=success&message=Paiement effectué avec succès');
+      return res.redirect('https://millenium-placement.sn/?status=success&message=Paiement effectué avec succès');
     } catch (error) {
       console.error('Erreur lors du traitement du callback:', error);
-      return res.redirect('https://mp.nataal.shop?status=error&message=Erreur lors du traitement du paiement');
+      return res.redirect('https://millenium-placement.sn/?status=error&message=Erreur lors du traitement du paiement');
     }
   };
   
@@ -404,7 +404,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       const { reference } = req.query;
       
       if (!reference) {
-        return res.redirect('https://mp.nataal.shop?status=error&message=Paramètres manquants');
+        return res.redirect('https://millenium-placement.sn/?status=error&message=Paramètres manquants');
       }
   
       const payment = await this.model.findOne({ reference });
@@ -412,7 +412,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       console.log('Payment found:', payment);
       
       if (!payment) {
-        return res.redirect('https://mp.nataal.shop?status=error&message=Référence de paiement invalide');
+        return res.redirect('https://millenium-placement.sn/?status=error&message=Référence de paiement invalide');
       }
   
       payment.status = "FAILED";
@@ -421,10 +421,10 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       await payment.save();
   
       // Rediriger vers la page d'accueil avec un message d'erreur
-      return res.redirect('https://mp.nataal.shop?status=error&message=Le paiement a échoué');
+      return res.redirect('https://millenium-placement.sn/?status=error&message=Le paiement a échoué');
     } catch (error) {
       console.error('Erreur lors du traitement du callback d\'erreur:', error);
-      return res.redirect('https://mp.nataal.shop?status=error&message=Erreur lors du traitement du paiement');
+      return res.redirect('https://millenium-placement.sn/?status=error&message=Erreur lors du traitement du paiement');
     }
   };
   
