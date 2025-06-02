@@ -412,7 +412,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       console.log('Payment found:', payment);
       
       if (!payment) {
-        return res.redirect('https://millenium-placement.sn/?status=error&message=Référence de paiement invalide');
+        return res.redirect('https://millenium-placement.sn/?status=error&message=Reference de paiement invalide');
       }
   
       payment.status = "FAILED";
@@ -421,7 +421,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       await payment.save();
   
       // Rediriger vers la page d'accueil avec un message d'erreur
-      return res.redirect('https://millenium-placement.sn/?status=error&message=Le paiement a échoué');
+      return res.redirect('https://millenium-placement.sn/?status=error&message=Le paiement a echoué');
     } catch (error) {
       console.error('Erreur lors du traitement du callback d\'erreur:', error);
       return res.redirect('https://millenium-placement.sn/?status=error&message=Erreur lors du traitement du paiement');
