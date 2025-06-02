@@ -372,28 +372,30 @@ export default class PaymentController extends BaseController<typeof PaymentMode
     
       
       if (!reference) {
-        return next(new CustomError('Paramètres manquants dans la requête de callback', 400));
+        return res.redirect('https://mp.nataal.shop?status=error&message=Paramètres manquants');
       }
   
       const payment = await this.model.findOne({ reference });
   
       console.log('Payment found:', payment);
 
-      console.log('Payment found metadata:', payment.metadata.reservationId);
+      console.log('Payment found metadata:', payment.metadata?.reservationId);
       
       if (!payment) {
-        return next(new CustomError('Référence de paiement invalide', 404));
+        return res.redirect('https://mp.nataal.shop?status=error&message=Référence de paiement invalide');
       }
   
       payment.status = "COMPLETED";
-      if (payment.metadata.reservationId) payment.transactionId = payment.metadata.reservationId;
+      if (payment.metadata?.reservationId) payment.transactionId = payment.metadata.reservationId;
       payment.updatedAt = DateTime.now().setZone('Africa/Dakar').toJSDate();
       
       await payment.save();
   
-      sendSuccess(res, 'Callback traité avec succès', payment, 200);
+      // Rediriger vers la page d'accueil avec un message de succès
+      return res.redirect('https://mp.nataal.shop?status=success&message=Paiement effectué avec succès');
     } catch (error) {
-      next(new CustomError('Erreur lors du traitement du callback', 500));
+      console.error('Erreur lors du traitement du callback:', error);
+      return res.redirect('https://mp.nataal.shop?status=error&message=Erreur lors du traitement du paiement');
     }
   };
   
@@ -402,7 +404,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       const { reference } = req.query;
       
       if (!reference) {
-        return next(new CustomError('Paramètres manquants dans la requête de callback', 400));
+        return res.redirect('https://mp.nataal.shop?status=error&message=Paramètres manquants');
       }
   
       const payment = await this.model.findOne({ reference });
@@ -410,7 +412,7 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       console.log('Payment found:', payment);
       
       if (!payment) {
-        return next(new CustomError('Référence de paiement invalide', 404));
+        return res.redirect('https://mp.nataal.shop?status=error&message=Référence de paiement invalide');
       }
   
       payment.status = "FAILED";
@@ -418,12 +420,12 @@ export default class PaymentController extends BaseController<typeof PaymentMode
       
       await payment.save();
   
-      sendSuccess(res, 'Callback traité avec succès', payment, 200);
+      // Rediriger vers la page d'accueil avec un message d'erreur
+      return res.redirect('https://mp.nataal.shop?status=error&message=Le paiement a échoué');
     } catch (error) {
-      next(new CustomError('Erreur lors du traitement du callback', 500));
+      console.error('Erreur lors du traitement du callback d\'erreur:', error);
+      return res.redirect('https://mp.nataal.shop?status=error&message=Erreur lors du traitement du paiement');
     }
   };
   
 }
-
-
